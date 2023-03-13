@@ -28,4 +28,9 @@ public class Purchase {
             {@JoinColumn(name = "id_installment")})
     private Set<Installment> installment = new HashSet<>();
 
+
+    @OneToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_client", referencedColumnName = "id_client")
+    private Client client;
+
 }

@@ -20,5 +20,7 @@ public class Installment {
     @ManyToMany(mappedBy = "installment")
     private Set<Purchase> purchases = new HashSet<>();
 
+
+
 }
 
