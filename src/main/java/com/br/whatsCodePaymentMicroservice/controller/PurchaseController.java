@@ -32,6 +32,15 @@ public class PurchaseController {
         return purchaseService.findById(id);
     }
 
+    @PatchMapping("/{id}")
+    public Purchase update(@PathVariable("id") Long id, @RequestBody Purchase purchase) {
+        return purchase;
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        this.purchaseService.delete(id);
+    }
 
 
 

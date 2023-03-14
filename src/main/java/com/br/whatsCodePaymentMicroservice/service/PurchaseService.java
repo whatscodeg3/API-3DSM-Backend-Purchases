@@ -28,4 +28,13 @@ public class PurchaseService {
     public Optional<Purchase> findById(Long id) {
         return this.purchaseRepository.findById(id);
     }
+
+    public Purchase update(Long id, Purchase purchase) {
+        // Do the verification of the existent entity and pick him by the id
+        return this.purchaseRepository.save(purchase);
+    }
+
+    public void delete(Long id) {
+        this.purchaseRepository.deleteById(id);
+    }
 }
