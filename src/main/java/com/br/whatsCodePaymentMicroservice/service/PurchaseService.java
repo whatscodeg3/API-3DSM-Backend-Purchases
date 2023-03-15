@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.service;
 
 import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.repository.PurchaseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,9 @@ public class PurchaseService {
 
     // CRUD
 
+    @Transactional
     public Purchase create(Purchase purchase) {
-        return purchase;
+        return purchaseRepository.save(purchase);
     }
 
     public List<Purchase> findAll() {

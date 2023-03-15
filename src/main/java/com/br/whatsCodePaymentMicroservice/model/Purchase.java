@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -29,8 +30,10 @@ public class Purchase {
     private Set<Installment> installment = new HashSet<>();
 
 
-    @OneToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_client", referencedColumnName = "id_client")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = "id_client")
     private Client client;
 
 }

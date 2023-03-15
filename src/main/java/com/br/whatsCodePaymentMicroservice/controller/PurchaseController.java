@@ -1,10 +1,17 @@
 package com.br.whatsCodePaymentMicroservice.controller;
 
+import com.br.whatsCodePaymentMicroservice.dto.PurchaseDto;
 import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.service.PurchaseService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +25,11 @@ public class PurchaseController {
     // CRUD
 
     @PostMapping
-    public Purchase create(@RequestBody Purchase purchase) {
-        return purchaseService.create(purchase);
+    public ResponseEntity<Object>create(@RequestBody PurchaseDto purchaseDto) {
+        var purchaseModel = new Purchase();
+        BeanUtils.copyProperties(purchaseDto, purchaseModel);
+        purchaseModel.setPurchaseDate(new Date());
+        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.create(purchaseModel));
     }
 
     @GetMapping
