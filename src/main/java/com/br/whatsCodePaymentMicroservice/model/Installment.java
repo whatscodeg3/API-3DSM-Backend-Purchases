@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class Installment {
     private Long id;
 
     @Column(name="payment_date")
-    private Date paymentDate;
+    private LocalDate paymentDate;
 
     @Column(name="installment_value")
     private BigDecimal installmentValue;

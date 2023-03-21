@@ -34,7 +34,7 @@ public class PurchaseService {
     }
 
     public Purchase update(Long id, Purchase purchase) {
-
+        purchase.setId(id);
         return this.purchaseRepository.save(purchase);
     }
 

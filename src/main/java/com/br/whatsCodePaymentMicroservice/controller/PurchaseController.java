@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -29,7 +30,7 @@ public class PurchaseController {
     public ResponseEntity<Object> create(@RequestBody PurchaseDto purchaseDto) {
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
-        purchaseModel.setPurchaseDate(new Date());
+        purchaseModel.setPurchaseDate(LocalDate.now());
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.create(purchaseModel));
     }
 
@@ -56,8 +57,8 @@ public class PurchaseController {
         }
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
-        purchaseModel.setPurchaseDate(new Date());
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.create(purchaseModel));
+        purchaseModel.setPurchaseDate(LocalDate.now());
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.update(id, purchaseModel));
     }
 
 

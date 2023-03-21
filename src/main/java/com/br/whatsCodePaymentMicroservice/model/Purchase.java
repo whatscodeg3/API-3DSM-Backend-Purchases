@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Cascade;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Purchase {
     private BigDecimal paymentValue;
 
     @Column(name="purchase_date")
-    private Date purchaseDate;
+    private LocalDate purchaseDate;
 
     @OneToMany(mappedBy= "purchase")
     private Set<Installment> installment = new HashSet<>();
@@ -33,8 +34,5 @@ public class Purchase {
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_client")
     private Client client;
-
-    // Tenho 1 compra com 12 parcelas OneToMany
-    // Tenho 12 parcelas para 1 compra ManyToOne
 
 }
