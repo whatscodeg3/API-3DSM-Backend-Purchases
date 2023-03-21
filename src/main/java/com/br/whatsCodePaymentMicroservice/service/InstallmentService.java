@@ -2,12 +2,10 @@ package com.br.whatsCodePaymentMicroservice.service;
 
 
 import com.br.whatsCodePaymentMicroservice.model.Installment;
-import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.repository.InstallmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +18,8 @@ public class InstallmentService {
 
     // CRUD
 
-    public Installment create(Installment installment) {
-        return installment;
+    public List<Installment> createMany(List<Installment> installments) {
+        return installmentRepository.saveAll(installments);
     }
 
     public List<Installment> findAll() {

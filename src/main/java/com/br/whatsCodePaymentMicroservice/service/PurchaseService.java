@@ -24,15 +24,17 @@ public class PurchaseService {
     }
 
     public List<Purchase> findAll() {
+
         return this.purchaseRepository.findAll();
     }
 
     public Optional<Purchase> findById(Long id) {
+
         return this.purchaseRepository.findById(id);
     }
 
     public Purchase update(Long id, Purchase purchase) {
-        // Do the verification of the existent entity and pick him by the id
+        purchase.setId(id);
         return this.purchaseRepository.save(purchase);
     }
 

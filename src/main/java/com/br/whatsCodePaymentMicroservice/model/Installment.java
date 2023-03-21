@@ -4,6 +4,9 @@ package com.br.whatsCodePaymentMicroservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,13 +17,20 @@ public class Installment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_Installment")
+    @Column(name="id")
     private Long id;
 
-    @ManyToMany(mappedBy = "installment")
-    private Set<Purchase> purchases = new HashSet<>();
+    @Column(name="payment_date")
+    private LocalDate paymentDate;
 
+    @Column(name="installment_value")
+    private BigDecimal installmentValue;
 
+    @Column(name="is_installment_payed")
+    private Boolean isInstallmentPayed;
 
+    @ManyToOne
+    @JoinColumn(name = "purchase_id")
+    private Purchase purchase;
 }
 
