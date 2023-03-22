@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,8 +25,18 @@ public class InstallmentController {
     // CRUD
 
     @PostMapping
-    public ResponseEntity<List<Installment>> create(@RequestBody List<Installment> installments ) {
+    public ResponseEntity<List<Installment>> create(@RequestBody List<Installment> installments, Double quantityInstallment, Double totalValuePurchase) {
         LocalDate currentDate = LocalDate.now();
+        var installmentValue = totalValuePurchase/quantityInstallment;
+        for(int i = 0; i <= quantityInstallment; i++) {
+            var modelInstallment = new Installment();
+            modelInstallment.setInstallmentValue(new BigDecimal(installmentValue));
+            modelInstallment.setIsInstallmentPayed(false);
+            modelInstallment.setPaymentDate(currentDate);
+            currentDate = currentDate.plusDays(30);
+        }
+
+
         for (Installment installment : installments) {
             installment.setPaymentDate(currentDate);
             currentDate = currentDate.plusDays(30);
