@@ -40,7 +40,7 @@ public class InstallmentController {
         var installmentValue = totalValuePurchase.divide(new BigDecimal(quantityInstallment), 2, RoundingMode.HALF_UP);
         List<Installment> installmentList = new ArrayList<>();
 
-        for(int i = 0; i <= quantityInstallment; i++) {
+        for(int i = 0; i < quantityInstallment; i++) {
             var modelInstallment = new Installment();
             modelInstallment.setInstallmentValue(installmentValue);
             modelInstallment.setIsInstallmentPayed(false);

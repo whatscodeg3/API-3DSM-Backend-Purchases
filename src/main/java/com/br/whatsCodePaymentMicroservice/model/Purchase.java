@@ -32,7 +32,6 @@ public class Purchase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_client")
-    @JsonIgnore
     private Client client;
 
 }

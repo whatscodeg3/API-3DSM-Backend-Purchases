@@ -1,5 +1,6 @@
 package com.br.whatsCodePaymentMicroservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -41,5 +42,6 @@ public class Client {
     private Address address;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Purchase> purchase = new ArrayList<>();
 }
