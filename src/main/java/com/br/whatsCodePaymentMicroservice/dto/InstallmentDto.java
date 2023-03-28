@@ -9,8 +9,7 @@ import java.time.LocalDate;
 @Data
 public class InstallmentDto {
 
-    private LocalDate paymentDate;
-    private BigDecimal installmentValue;
-    private Boolean isInstallmentPayed;
-    private Purchase purchase;
+    private BigDecimal purchaseValue;
+    private int installmentQuantity;
+    private Long purchaseId;
 }

@@ -1,14 +1,12 @@
 package com.br.whatsCodePaymentMicroservice.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Entity
@@ -29,8 +27,9 @@ public class Installment {
     @Column(name="is_installment_payed")
     private Boolean isInstallmentPayed;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
+    @JsonIgnore
     private Purchase purchase;
 }
 

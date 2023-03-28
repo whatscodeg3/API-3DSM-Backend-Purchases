@@ -1,15 +1,14 @@
 package com.br.whatsCodePaymentMicroservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Entity
@@ -27,12 +26,13 @@ public class Purchase {
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
 
-    @OneToMany(mappedBy= "purchase")
-    private Set<Installment> installment = new HashSet<>();
+    @OneToMany(mappedBy= "purchase", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties
+    private List<Installment> installment = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "id_client")
+    @JsonIgnore
     private Client client;
 
 }

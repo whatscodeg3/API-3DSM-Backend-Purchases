@@ -30,9 +30,8 @@ public class InstallmentService {
         return this.installmentRepository.findById(id);
     }
 
-    public Installment update(Long id, Installment installment) {
+    public Installment update( Installment installment) {
         // Do the verification of the existent entity and pick him by the id
-        installment.setId(id);
         return this.installmentRepository.save(installment);
     }
 
