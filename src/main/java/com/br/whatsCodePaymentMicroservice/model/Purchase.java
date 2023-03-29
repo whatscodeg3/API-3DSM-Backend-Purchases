@@ -30,7 +30,7 @@ public class Purchase {
     @JsonIgnoreProperties
     private List<Installment> installment = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "id_client")
     private Client client;
 

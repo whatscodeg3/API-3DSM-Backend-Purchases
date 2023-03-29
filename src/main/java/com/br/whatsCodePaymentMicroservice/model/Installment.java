@@ -27,7 +27,7 @@ public class Installment {
     @Column(name="is_installment_payed")
     private Boolean isInstallmentPayed;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "purchase_id")
     @JsonIgnore
     private Purchase purchase;
