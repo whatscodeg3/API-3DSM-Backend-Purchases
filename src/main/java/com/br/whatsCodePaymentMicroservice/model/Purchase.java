@@ -23,6 +23,9 @@ public class Purchase {
     @Column(name="payment_value")
     private BigDecimal paymentValue;
 
+    @Column(name="installment_quantity")
+    private Integer installmentQuantity;
+
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
 

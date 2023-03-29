@@ -12,6 +12,8 @@ public class PurchaseDto {
 
     private BigDecimal paymentValue;
     private Date purchaseDate;
+
+    private Integer installmentQuantity;
     private List<Installment> installment = new ArrayList<>();
     private Client client;
 
