@@ -23,6 +23,9 @@ public class Purchase {
     @Column(name="payment_value")
     private BigDecimal paymentValue;
 
+    @Column(name="installment_quantity")
+    private Integer installmentQuantity;
+
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
 
@@ -30,7 +33,7 @@ public class Purchase {
     @JsonIgnoreProperties
     private List<Installment> installment = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "id_client")
     private Client client;
 

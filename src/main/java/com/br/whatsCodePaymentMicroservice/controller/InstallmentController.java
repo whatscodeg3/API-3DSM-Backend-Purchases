@@ -32,7 +32,7 @@ public class InstallmentController {
 
     @PostMapping
     public ResponseEntity<List<Installment>> create(@RequestBody InstallmentDto installmentDto) {
-        LocalDate currentDate = LocalDate.now();
+        LocalDate currentDate = LocalDate.now().plusDays(30);
         var totalValuePurchase = installmentDto.getPurchaseValue();
         var quantityInstallment = installmentDto.getInstallmentQuantity();
         var purchaseOptional = purchaseService.findById(installmentDto.getPurchaseId());
