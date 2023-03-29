@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/purchases")
+@CrossOrigin
 public class PurchaseController {
 
     @Autowired
@@ -26,12 +27,12 @@ public class PurchaseController {
 
     // CRUD
 
-    @PostMapping
-    public ResponseEntity<Object> create(@RequestBody PurchaseDto purchaseDto) {
+    @PostMapping("/{cpf}")
+    public ResponseEntity<Object> create(@PathVariable("cpf") String cpf, @RequestBody PurchaseDto purchaseDto) {
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
         purchaseModel.setPurchaseDate(LocalDate.now());
-        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.create(purchaseModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.create(purchaseModel, cpf));
     }
 
     @GetMapping
