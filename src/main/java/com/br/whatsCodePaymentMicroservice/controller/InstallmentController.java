@@ -44,7 +44,7 @@ public class InstallmentController {
             var modelInstallment = new Installment();
             modelInstallment.setInstallmentValue(installmentValue);
             modelInstallment.setIsInstallmentPayed(false);
-            modelInstallment.setPaymentDate(currentDate);
+            modelInstallment.setInstallmentDueDate(currentDate);
             modelInstallment.setPurchase(purchase);
             currentDate = currentDate.plusDays(30);
             installmentList.add(modelInstallment);
@@ -73,8 +73,11 @@ public class InstallmentController {
         if (installmentOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Installment not found");
         }
+        var currentDate = LocalDate.now();
         var installmentModel = installmentOptional.get();
         installmentModel.setIsInstallmentPayed(true);
+        installmentModel.setPaymentDate(currentDate);
+        installmentModel.setCreditDate(currentDate.plusDays(3));
 
         return ResponseEntity.status(HttpStatus.OK).body(installmentService.update(installmentModel));
     }
