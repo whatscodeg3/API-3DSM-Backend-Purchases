@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.controller;
 
 import com.br.whatsCodePaymentMicroservice.dto.InstallmentDto;
 import com.br.whatsCodePaymentMicroservice.model.Installment;
+import com.br.whatsCodePaymentMicroservice.request.InstallmentRequest;
 import com.br.whatsCodePaymentMicroservice.service.InstallmentService;
 import com.br.whatsCodePaymentMicroservice.service.PurchaseService;
 import com.fasterxml.jackson.databind.util.BeanUtil;
@@ -44,7 +45,7 @@ public class InstallmentController {
             var modelInstallment = new Installment();
             modelInstallment.setInstallmentValue(installmentValue);
             modelInstallment.setIsInstallmentPayed(false);
-            modelInstallment.setPaymentDate(currentDate);
+            modelInstallment.setInstallmentDueDate(currentDate);
             modelInstallment.setPurchase(purchase);
             currentDate = currentDate.plusDays(30);
             installmentList.add(modelInstallment);
@@ -68,13 +69,16 @@ public class InstallmentController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody InstallmentRequest installmentRequest) {
         Optional<Installment> installmentOptional = installmentService.findById(id);
         if (installmentOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Installment not found");
         }
+        var currentDate = LocalDate.now();
         var installmentModel = installmentOptional.get();
         installmentModel.setIsInstallmentPayed(true);
+        installmentModel.setPaymentDate(LocalDate.parse(installmentRequest.getPaymentDate()));
+        installmentModel.setCreditDate(currentDate.plusDays(installmentRequest.getDaysToCredit()));
 
         return ResponseEntity.status(HttpStatus.OK).body(installmentService.update(installmentModel));
     }

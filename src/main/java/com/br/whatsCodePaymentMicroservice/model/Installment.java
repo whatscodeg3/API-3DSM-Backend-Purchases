@@ -18,14 +18,20 @@ public class Installment {
     @Column(name="id")
     private Long id;
 
-    @Column(name="payment_date")
-    private LocalDate paymentDate;
+    @Column(name="installment_due_date")
+    private LocalDate installmentDueDate;
 
     @Column(name="installment_value")
     private BigDecimal installmentValue;
 
     @Column(name="is_installment_payed")
     private Boolean isInstallmentPayed;
+
+    @Column(name="payment_date")
+    private LocalDate paymentDate;
+
+    @Column(name="credit_date")
+    private LocalDate creditDate;
 
     @ManyToOne()
     @JoinColumn(name = "purchase_id")
