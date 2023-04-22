@@ -4,6 +4,7 @@ package com.br.whatsCodePaymentMicroservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "installment")
-public class Installment {
+public class Installment extends RepresentationModel<Installment> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

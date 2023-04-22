@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.controller;
 
 import com.br.whatsCodePaymentMicroservice.dto.InstallmentDto;
 import com.br.whatsCodePaymentMicroservice.model.Installment;
+import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.request.InstallmentRequest;
 import com.br.whatsCodePaymentMicroservice.service.InstallmentService;
 import com.br.whatsCodePaymentMicroservice.service.PurchaseService;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.util.BeanUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -51,21 +56,47 @@ public class InstallmentController {
             installmentList.add(modelInstallment);
         }
 
+        List<Installment> installments = installmentService.createMany(installmentList);
+
+        for(Installment installment : installments) {
+            var installmentId = installment.getId();
+            Link selfLink = linkTo(InstallmentController.class).slash(installmentId).withSelfRel();
+            installment.add(selfLink);
+            Link installmentsLink = linkTo(methodOn(InstallmentController.class).findAll()).withRel("allInstallments");
+            installment.add(installmentsLink);
+
+        }
+
         purchase.setInstallment(installmentList);
-        return ResponseEntity.status(HttpStatus.CREATED).body(installmentService.createMany(installmentList));
+        return ResponseEntity.status(HttpStatus.CREATED).body(installmentService.createMany(installments));
 
     }
 
     @GetMapping
-    public List<Installment> findAll() {
+    public ResponseEntity<List<Installment>> findAll() {
+        List<Installment> installments = installmentService.findAll();
 
-        return installmentService.findAll();
+        for(Installment installment : installments) {
+            var installmentId = installment.getId();
+            Link selfLink = linkTo(InstallmentController.class).slash(installmentId).withSelfRel();
+            installment.add(selfLink);
+
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(installments);
     }
 
     @GetMapping("/{id}")
-    public Optional<Installment> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<Installment> findById(@PathVariable("id") Long id) {
+        Optional<Installment> installmentOptional = installmentService.findById(id);
 
-        return installmentService.findById(id);
+        Installment installment = installmentOptional.orElseThrow(() -> new RuntimeException("Installment not Found"));
+        Link installmentsLink = linkTo(methodOn(InstallmentController.class).findAll()).withRel("allInstallments");
+        installment.add(installmentsLink);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(installment);
     }
 
     @PatchMapping("/{id}")
