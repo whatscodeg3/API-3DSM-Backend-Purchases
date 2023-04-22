@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.util.*;
 @Data
 @Entity
 @Table(name = "purchase")
-public class Purchase {
+public class Purchase extends RepresentationModel<Purchase> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

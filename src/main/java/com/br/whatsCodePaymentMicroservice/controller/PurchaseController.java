@@ -6,6 +6,7 @@ import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.service.PurchaseService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/purchases")
@@ -31,22 +35,39 @@ public class PurchaseController {
     public ResponseEntity<Object> create(@PathVariable("cpf") String cpf, @RequestBody PurchaseDto purchaseDto) {
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
-        purchaseModel.setPurchaseDate(LocalDate.now());
-        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.create(purchaseModel, cpf));
+        Purchase purchaseCreated = purchaseService.create(purchaseModel, cpf);
+
+        Link selfLink = linkTo(PurchaseController.class).slash(purchaseCreated.getId()).withSelfRel();
+        purchaseCreated.add(selfLink);
+
+        Link relLink = linkTo(methodOn(PurchaseController.class).findAll()).withRel("allPurchases");
+        purchaseCreated.add(relLink);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(purchaseCreated);
     }
 
     @GetMapping
     public ResponseEntity<List<Purchase>> findAll() {
+        List<Purchase> purchases = purchaseService.findAll();
+
+        for(Purchase purchase : purchases) {
+            var purchaseId = purchase.getId();
+            Link selfLink = linkTo(PurchaseController.class).slash(purchaseId).withSelfRel();
+            purchase.add(selfLink);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(purchaseService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable("id") Long id) {
         Optional<Purchase> purchaseOptional = purchaseService.findById(id);
+        Purchase purchase = purchaseOptional.orElseThrow(() -> new RuntimeException("Purchase not Found"));
+        Link link = linkTo(methodOn(PurchaseController.class).findAll()).withRel("allPurchases");
+        purchase.add(link);
 
-        return purchaseOptional.isPresent()
-                ? ResponseEntity.status(HttpStatus.OK).body(purchaseOptional.get())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Purchase Not Found");
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseOptional.get());
+
 
     }
 
