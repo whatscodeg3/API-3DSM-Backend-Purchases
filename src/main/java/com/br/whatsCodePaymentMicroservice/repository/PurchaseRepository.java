@@ -18,8 +18,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             + "FROM Purchase p "
             + "INNER JOIN Client c ON p.client.id = c.id "
             + "INNER JOIN Installment i ON p.id = i.purchase.id "
-            + "WHERE i.installmentDueDate BETWEEN :startDate AND :endDate "
-            + "GROUP BY p.id")
+            + "WHERE i.installmentDueDate BETWEEN :startDate AND :endDate ")
     List<Object[]> findReportByDueDate(LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT c.cpf, c.fullName, p.purchaseDate, p.paymentValue, i.installmentDueDate, i.paymentDate, i.creditDate, i.installmentValue "

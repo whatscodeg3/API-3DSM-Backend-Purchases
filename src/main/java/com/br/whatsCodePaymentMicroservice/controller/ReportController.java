@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,11 @@ public class ReportController {
 
 
     @GetMapping
-    public ResponseEntity<List<ReportResponse>> findAll(@RequestBody ReportRequest request) {
+    public ResponseEntity<List<ReportResponse>> findAll(@RequestParam("initalDate") String initalDate, @RequestParam("finalDate") String finalDate, @RequestParam("filterType") int filterType) {
+    	ReportRequest request = new ReportRequest();
+    	request.setInitalDate(LocalDate.parse(initalDate));
+    	request.setFinalDate(LocalDate.parse(finalDate));
+    	request.setFilterType(filterType);
         return ResponseEntity.status(HttpStatus.OK).body(service.report(request));
     }
 
