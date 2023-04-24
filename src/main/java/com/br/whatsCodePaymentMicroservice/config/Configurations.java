@@ -43,6 +43,7 @@ public class Configurations {
         methods.add("GET");
         methods.add("POST");
         methods.add("PUT");
+        methods.add("PATCH");
         methods.add("DELETE");
         headers.add("Authorization");
         headers.add("Cache-Control");
