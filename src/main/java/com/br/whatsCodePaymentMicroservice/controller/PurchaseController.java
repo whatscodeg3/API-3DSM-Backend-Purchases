@@ -56,7 +56,7 @@ public class PurchaseController {
             purchase.add(selfLink);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(purchases);
     }
 
     @GetMapping("/{id}")
@@ -66,7 +66,7 @@ public class PurchaseController {
         Link link = linkTo(methodOn(PurchaseController.class).findAll()).withRel("allPurchases");
         purchase.add(link);
 
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body(purchase);
 
 
     }
