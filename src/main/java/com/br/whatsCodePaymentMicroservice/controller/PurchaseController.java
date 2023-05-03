@@ -32,10 +32,10 @@ public class PurchaseController {
     // CRUD
 
     @PostMapping("/{cpf}")
-    public ResponseEntity<Object> create(@PathVariable("cpf") String cpf, @RequestBody PurchaseDto purchaseDto) {
+    public ResponseEntity<Object> create(@PathVariable("cpf") String cpf, @RequestBody PurchaseDto purchaseDto, @RequestParam("token") String token) {
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
-        Purchase purchaseCreated = purchaseService.create(purchaseModel, cpf);
+        Purchase purchaseCreated = purchaseService.create(purchaseModel, cpf, token);
 
         Link selfLink = linkTo(PurchaseController.class).slash(purchaseCreated.getId()).withSelfRel();
         purchaseCreated.add(selfLink);
