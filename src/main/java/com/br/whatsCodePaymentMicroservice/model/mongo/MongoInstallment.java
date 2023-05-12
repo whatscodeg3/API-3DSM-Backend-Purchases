@@ -25,7 +25,7 @@ public class MongoInstallment {
 
     private LocalDate creditDate;
 
-    @DBRef
+
     private MongoPurchase purchase;
 
 }

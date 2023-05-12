@@ -21,6 +21,8 @@ public class MongoPurchase {
 
     private LocalDate purchaseDate;
 
+    private String cpf;
+
     @DBRef
     private List<MongoInstallment> installments;
 
