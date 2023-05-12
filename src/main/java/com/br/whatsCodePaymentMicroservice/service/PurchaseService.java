@@ -5,6 +5,10 @@ import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.repository.PurchaseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,9 +25,9 @@ public class PurchaseService {
     // CRUD
 
     @Transactional
-    public Purchase create(Purchase purchase, String cpf) {
+    public Purchase create(Purchase purchase, String cpf, String token) {
 
-        purchase.setClient(searchClient(cpf));
+        purchase.setClient(searchClient(cpf, token));
 
         return purchaseRepository.save(purchase);
 
@@ -48,12 +52,15 @@ public class PurchaseService {
         this.purchaseRepository.deleteById(id);
     }
 
-    public Client searchClient(String cpf){
+    public Client searchClient(String cpf, String token){
 
         RestTemplate restTemplate = new RestTemplate();
 
-        Client client = restTemplate.getForObject("http://localhost:8080/client/queryFromCpf/"+cpf, Client.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
 
-        return client;
+
+        ResponseEntity<Client> client = restTemplate.exchange("http://localhost:8080/client/queryFromCpf/"+cpf, HttpMethod.GET,new HttpEntity<>(headers), Client.class);
+        return client.getBody();
     }
 }

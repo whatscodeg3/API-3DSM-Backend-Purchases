@@ -5,13 +5,14 @@ import com.br.whatsCodePaymentMicroservice.model.Installment;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 @Data
 public class PurchaseDto {
 
     private BigDecimal paymentValue;
-    private Date purchaseDate;
+    private LocalDate purchaseDate;
 
     private Integer installmentQuantity;
     private List<Installment> installment = new ArrayList<>();
