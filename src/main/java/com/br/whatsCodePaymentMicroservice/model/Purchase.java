@@ -29,6 +29,9 @@ public class Purchase extends RepresentationModel<Purchase> {
 
     @Column(name="purchase_date")
     private LocalDate purchaseDate;
+    
+    @Column(name="client_name")
+    private String clientName;
 
     @OneToMany(mappedBy= "purchase", cascade = CascadeType.ALL)
     @JsonIgnoreProperties

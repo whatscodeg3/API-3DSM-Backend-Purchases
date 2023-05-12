@@ -10,9 +10,10 @@ import java.util.*;
 
 @Data
 public class PurchaseDto {
-
+	
     private BigDecimal paymentValue;
     private LocalDate purchaseDate;
+    private String clientName;
 
     private Integer installmentQuantity;
     private List<Installment> installment = new ArrayList<>();
