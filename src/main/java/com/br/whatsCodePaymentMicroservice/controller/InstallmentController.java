@@ -1,6 +1,7 @@
 package com.br.whatsCodePaymentMicroservice.controller;
 
 import com.br.whatsCodePaymentMicroservice.dto.InstallmentDto;
+import com.br.whatsCodePaymentMicroservice.model.Employee;
 import com.br.whatsCodePaymentMicroservice.model.Installment;
 import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.request.InstallmentRequest;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -37,7 +40,9 @@ public class InstallmentController {
     // CRUD
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<List<Installment>> create(@RequestBody InstallmentDto installmentDto) {
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LocalDate currentDate = LocalDate.now().plusDays(30);
         var totalValuePurchase = installmentDto.getPurchaseValue();
         var quantityInstallment = installmentDto.getInstallmentQuantity();
@@ -52,6 +57,8 @@ public class InstallmentController {
             modelInstallment.setIsInstallmentPayed(false);
             modelInstallment.setInstallmentDueDate(currentDate);
             modelInstallment.setPurchase(purchase);
+            modelInstallment.setCreatedBy(employee.getEmail());
+            modelInstallment.setCreatedAt(new Date());
             currentDate = currentDate.plusDays(30);
             installmentList.add(modelInstallment);
         }
@@ -73,6 +80,7 @@ public class InstallmentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<List<Installment>> findAll() {
         List<Installment> installments = installmentService.findAll();
 
@@ -88,6 +96,7 @@ public class InstallmentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<Installment> findById(@PathVariable("id") Long id) {
         Optional<Installment> installmentOptional = installmentService.findById(id);
 
@@ -100,8 +109,10 @@ public class InstallmentController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody InstallmentRequest installmentRequest) {
         Optional<Installment> installmentOptional = installmentService.findById(id);
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (installmentOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Installment not found");
         }
@@ -111,6 +122,6 @@ public class InstallmentController {
         installmentModel.setPaymentDate(LocalDate.parse(installmentRequest.getPaymentDate()));
         installmentModel.setCreditDate(currentDate.plusDays(installmentRequest.getDaysToCredit()));
 
-        return ResponseEntity.status(HttpStatus.OK).body(installmentService.update(installmentModel));
+        return ResponseEntity.status(HttpStatus.OK).body(installmentService.update(installmentModel, employee));
     }
 }

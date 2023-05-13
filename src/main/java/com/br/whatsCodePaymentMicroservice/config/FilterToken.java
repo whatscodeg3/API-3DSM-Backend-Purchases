@@ -1,5 +1,6 @@
 package com.br.whatsCodePaymentMicroservice.config;
 
+import com.br.whatsCodePaymentMicroservice.repository.EmployeeRepository;
 import com.br.whatsCodePaymentMicroservice.repository.UserRepository;
 import com.br.whatsCodePaymentMicroservice.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -23,6 +24,11 @@ public class FilterToken extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +41,7 @@ public class FilterToken extends OncePerRequestFilter {
             token = authorizationHeader.replace("Bearer ", "");
             var subject = this.tokenService.getSubject(token);
 
-            var user = this.userRepository.findByLogin(subject);
+            var user = this.employeeRepository.findByCpf(subject);
 
             var authentication = new UsernamePasswordAuthenticationToken(user,
                     null, user.getAuthorities());
