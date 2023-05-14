@@ -1,4 +1,5 @@
 package com.br.whatsCodePaymentMicroservice.controller;
+import com.br.whatsCodePaymentMicroservice.model.Employee;
 import com.br.whatsCodePaymentMicroservice.service.TokenService;
 import com.br.whatsCodePaymentMicroservice.dto.LoginDto;
 import com.br.whatsCodePaymentMicroservice.model.User;
@@ -30,9 +31,9 @@ public class AuthController {
         Authentication authenticate = this.authenticationManager
                 .authenticate(usernamePasswordAuthenticationToken);
 
-        var user = (User) authenticate.getPrincipal();
+        var employee = (Employee) authenticate.getPrincipal();
 
-        return tokenService.gerarToken(user);
+        return tokenService.gerarToken(employee);
 
     }
 }

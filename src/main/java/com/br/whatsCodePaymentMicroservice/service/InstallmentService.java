@@ -1,11 +1,13 @@
 package com.br.whatsCodePaymentMicroservice.service;
 
 
+import com.br.whatsCodePaymentMicroservice.model.Employee;
 import com.br.whatsCodePaymentMicroservice.model.Installment;
 import com.br.whatsCodePaymentMicroservice.repository.InstallmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +32,10 @@ public class InstallmentService {
         return this.installmentRepository.findById(id);
     }
 
-    public Installment update( Installment installment) {
+    public Installment update( Installment installment, Employee employee) {
         // Do the verification of the existent entity and pick him by the id
+        installment.setUpdatedBy(employee.getEmail());
+        installment.setUpdatedAt(new Date());
         return this.installmentRepository.save(installment);
     }
 

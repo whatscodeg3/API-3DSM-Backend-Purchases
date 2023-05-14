@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.controller;
 
 import com.br.whatsCodePaymentMicroservice.dto.PurchaseDto;
 import com.br.whatsCodePaymentMicroservice.model.Client;
+import com.br.whatsCodePaymentMicroservice.model.Employee;
 import com.br.whatsCodePaymentMicroservice.model.Purchase;
 import com.br.whatsCodePaymentMicroservice.service.PurchaseService;
 import org.springframework.beans.BeanUtils;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -32,10 +35,12 @@ public class PurchaseController {
     // CRUD
 
     @PostMapping("/{cpf}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador')")
     public ResponseEntity<Object> create(@PathVariable("cpf") String cpf, @RequestBody PurchaseDto purchaseDto, @RequestParam("token") String token) {
         var purchaseModel = new Purchase();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
-        Purchase purchaseCreated = purchaseService.create(purchaseModel, cpf, token);
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Purchase purchaseCreated = purchaseService.create(purchaseModel, cpf, token, employee);
 
         Link selfLink = linkTo(PurchaseController.class).slash(purchaseCreated.getId()).withSelfRel();
         purchaseCreated.add(selfLink);
@@ -47,6 +52,7 @@ public class PurchaseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<List<Purchase>> findAll() {
         List<Purchase> purchases = purchaseService.findAll();
 
@@ -60,6 +66,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Comercial') or hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<Object> findById(@PathVariable("id") Long id) {
         Optional<Purchase> purchaseOptional = purchaseService.findById(id);
         Purchase purchase = purchaseOptional.orElseThrow(() -> new RuntimeException("Purchase not Found"));
@@ -72,25 +79,29 @@ public class PurchaseController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody PurchaseDto purchaseDto) {
         Optional<Purchase> purchaseOptional = purchaseService.findById(id);
         if (purchaseOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Purchase not found");
         }
         var purchaseModel = new Purchase();
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         BeanUtils.copyProperties(purchaseDto, purchaseModel);
         purchaseModel.setPurchaseDate(LocalDate.now());
-        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.update(id, purchaseModel));
+        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.update(id, purchaseModel, employee));
     }
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('Administrador') or hasAnyAuthority('Financeiro')")
     public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
         Optional<Purchase> purchaseOptional = purchaseService.findById(id);
         if(purchaseOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Purchase not found");
         }
-        purchaseService.delete(id);
+        Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        purchaseService.delete(id, employee.getEmail());
 
         return ResponseEntity.status(HttpStatus.OK).body("Purchase deleted successfully");
     }

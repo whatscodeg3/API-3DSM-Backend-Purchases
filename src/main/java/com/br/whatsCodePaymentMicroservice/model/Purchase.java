@@ -41,4 +41,16 @@ public class Purchase extends RepresentationModel<Purchase> {
     @JoinColumn(name = "id_client")
     private Client client;
 
+    @Column
+    private String createdBy;
+
+    @Column
+    private Date createdAt;
+
+    @Column
+    private String updatedBy;
+
+    @Column
+    private Date updatedAt;
+
 }

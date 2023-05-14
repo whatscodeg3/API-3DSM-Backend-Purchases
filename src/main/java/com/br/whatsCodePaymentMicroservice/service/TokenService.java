@@ -2,6 +2,7 @@ package com.br.whatsCodePaymentMicroservice.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.br.whatsCodePaymentMicroservice.model.Employee;
 import com.br.whatsCodePaymentMicroservice.model.User;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,11 @@ import java.time.ZoneOffset;
 
 @Service
 public class TokenService {
-    public String gerarToken(User user) {
+    public String gerarToken(Employee employee) {
         return JWT.create()
                 .withIssuer("")
-                .withSubject(user.getUsername())
-                .withClaim("id", user.getId())
+                .withSubject(employee.getUsername())
+                .withClaim("id", employee.getId())
                 .withExpiresAt(LocalDateTime.now()
                         .plusMinutes(60)
                         .toInstant(ZoneOffset.of("-03:00"))
